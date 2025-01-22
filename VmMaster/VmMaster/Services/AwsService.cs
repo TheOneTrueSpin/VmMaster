@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VmMaster.Dtos.Post;
 
 namespace VmMaster.Services
 {
     public class AwsService : ICloudService
     {
-        public void CreateVM()
+        public Task CreateVM(CreateVmDto vmDto)
         {
-            Console.WriteLine("Created VM on AWS");
+            throw new NotImplementedException();
         }
         public void DestroyVM()
         {
@@ -24,6 +25,10 @@ namespace VmMaster.Services
         public void AwsSpeciality()
         {
             Console.WriteLine("a special service for aws");
+        }
+        public Task ListVM()
+        {
+            Console.WriteLine("List Vm on AWS");
         }
     }
 }

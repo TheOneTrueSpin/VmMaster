@@ -1,9 +1,12 @@
-﻿namespace VmMaster.Interfaces
+﻿using VmMaster.Dtos.Post;
+
+namespace VmMaster.Interfaces
 {
     public interface ICloudService
     {
-        public void CreateVM();
+        public Task CreateVM(CreateVmDto vmDto);
         public void DestroyVM();
         public void RenameVM(string name);
+        public Task ListVM();
     }
 }
