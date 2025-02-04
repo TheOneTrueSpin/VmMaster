@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using VmMaster.Classes;
 using VmMaster.Dtos.Post;
 using VmMaster.Interfaces;
 using VmMaster.Models;
@@ -18,17 +19,29 @@ namespace VmMaster.Controllers
             _cloudServiceFactory = cloudServiceFactory;
         }
         
-        [HttpGet("GetVmInfo")]
-        public ActionResult<VmData> GetVmInfo(int vmId)
+        [HttpGet("GetSizesInfo")]
+        public async Task<ActionResult<DropletSizesResponse>> GetSizes()
         {
-            return Ok();
+            ICloudService? digitalOceanService = _cloudServiceFactory.GetService(typeof(DigitalOceanService));
+            if (digitalOceanService is null)
+            {
+                throw new Exception("Cloud service does not exist");
+            }
+            DropletSizesResponse dropletSizesResponse = await digitalOceanService.GetSizes();
+
+            return Ok(dropletSizesResponse);
         }
         [HttpGet("ListVms")]
-        public ActionResult<List<VmData>> ListVms()
+        public async Task<ActionResult<List<VmData>>> ListVms()
         {
-            //current work
+            ICloudService? digitalOceanService = _cloudServiceFactory.GetService(typeof(DigitalOceanService));
+            if (digitalOceanService is null)
+            {
+                throw new Exception("Cloud service does not exist");
+            }
+            List<VmData> vmData = await digitalOceanService.ListVM();
 
-            return Ok();
+            return Ok(vmData);
         }
         [HttpPost("NewVm")]
         public async Task<ActionResult> CreateVm([FromBody]CreateVmDto createVmDto)
@@ -41,16 +54,28 @@ namespace VmMaster.Controllers
             await digitalOceanService.CreateVM(createVmDto);
             return Ok();
         }
-        [HttpPut("RenameVm")]
-        public ActionResult RenameVm(int vmId, string name)
+        [HttpPost("RenameVm")]
+        public async Task<ActionResult> RenameVm(string name, int vmId)
         {
+            ICloudService? digitalOceanService = _cloudServiceFactory.GetService(typeof(DigitalOceanService));
+            if (digitalOceanService is null)
+            {
+                throw new Exception("Cloud service does not exist");
+            }
+            await digitalOceanService.RenameVM(name, vmId);
             return Ok();
         }
 
 
         [HttpDelete("DeleteVm")]
-        public ActionResult DeleteVm(int vmId)
+        public async Task<ActionResult> DeleteVm(int vmId)
         {
+            ICloudService? digitalOceanService = _cloudServiceFactory.GetService(typeof(DigitalOceanService));
+            if (digitalOceanService is null)
+            {
+                throw new Exception("Cloud service does not exist");
+            }
+            await digitalOceanService.DestroyVM(vmId);
             return Ok();
         }
     }
